@@ -1,0 +1,32 @@
+.cart-wrapper {
+    position: relative;
+}
+
+.cart-wrapper h3 {
+    margin-top: 0;
+    padding-right: 25px;
+}
+
+.remove-product {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+    background-color: transparent;
+    font-size: 20px;
+}
+
+.drawer-wrapper .ant-drawer-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.cartproducts-warpper {
+    flex: 1;
+}
+
+.subtotal-wrap {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}

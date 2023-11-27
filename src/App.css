@@ -1,38 +1,83 @@
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@font-face {
+  font-family: 'Jost';
+  src: url("../src/assets/fonts/Jost-Regular.ttf");
+  font-weight: normal;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@font-face {
+  font-family: 'Jost';
+  src: url("../src/assets/fonts/Jost-Medium.ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Jost';
+  src: url("../src/assets/fonts/Jost-SemiBold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Jost';
+  src: url("../src/assets/fonts/Jost-Bold.ttf");
+  font-weight: bold;
+}
+
+img {
+  max-width: 100%;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: block;
+}
+
+@media screen and (min-width:576) {
+  .container {
+    max-width: 540px;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+@media screen and (min-width:768) {
+  .container {
+    max-width: 720px;
+  }
 }
 
-.App-link {
-  color: #61dafb;
+@media screen and (min-width:992) {
+  .container {
+    max-width: 960px;
+  }
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media screen and (min-width:1200) {
+  .container {
+    max-width: 1140px;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media screen and (min-width:1440px) {
+  .container {
+    max-width: 1320px;
   }
+}
+
+
+p {
+  margin: 0;
+  font-family: "Jost";
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Jost";
+  margin: 0;
 }

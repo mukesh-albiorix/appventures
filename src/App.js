@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import ProductList from "./pages/productListing/ProductList";
+import ProductDetails from "./pages/productListing/ProductDetails";
+import { LoaderContextProvider } from "./context/LoaderContext";
+import Loader from "./components/loader/Loader";
+import ProductCategory from "./pages/productCategory/ProductCategory";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <LoaderContextProvider>
+        <Loader />
+        <Routes>
+          <Route path="/" element={<ProductList />} />
+          <Route path="/product" element={<ProductList />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route
+            path="/product-category/:category"
+            element={<ProductCategory />}
+          />
+        </Routes>
+      </LoaderContextProvider>
     </div>
   );
 }
