@@ -37,7 +37,7 @@ const Cart = ({ open, setOpen, cartProduct, setCartProduct }) => {
 
   return (
     <div>
-      <Drawer
+      {/* <Drawer
         title={`Your Cart (${totalQuantity})`}
         closeIcon="Close"
         width={520}
@@ -72,7 +72,7 @@ const Cart = ({ open, setOpen, cartProduct, setCartProduct }) => {
         <div className="subtotal-wrap">
           <span>Subtotal:</span> $ {totalPrice}
         </div>
-      </Drawer>
+      </Drawer> */}
     </div>
   );
 };
