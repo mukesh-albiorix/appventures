@@ -8,6 +8,8 @@ import { useLoadingContext } from "../../context/LoaderContext";
 import ReactStars from "react-stars";
 import { ProductDetailsItems } from "../../components/helper/NavHelper";
 import Cart from "../../components/addtocart/Cart";
+import { useDispatch, useSelector } from "react-redux";
+import { isLoaderHandler } from "../../redux/slices/LoaderSlice";
 
 const ProductDetails = () => {
   const [relatedProductData, setRelatedProductData] = useState([]);
@@ -16,15 +18,21 @@ const ProductDetails = () => {
 
   const [cartProduct, setCartProduct] = useState([]);
 
+  const userData = useSelector((state) => state.apicall.data);
+
   const [quantity, setQuantity] = useState(1);
 
   const [addcart, setAddCart] = useState(false);
 
-  const { setIsLoading } = useLoadingContext();
+  // const { setIsLoading } = useLoadingContext();
+  const dispatch = useDispatch();
+
   const [openDrawer, setOpenDrawer] = useState(false);
   const { id } = useParams();
 
   const navigate = useNavigate();
+
+  console.log("userData at product page", userData);
 
   useEffect(() => {
     getSingleProductHandler();
@@ -34,22 +42,26 @@ const ProductDetails = () => {
   }, [id]);
 
   const getProductsHandler = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    dispatch(isLoaderHandler(true));
     await getDataHandler("https://dummyjson.com/products").then((response) => {
       if (response.status === "success") {
         setRelatedProductData(response?.response.products);
-        setIsLoading(false);
+        // setIsLoading(false);
+        dispatch(isLoaderHandler(false));
       }
     });
   };
 
   const getSingleProductHandler = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    dispatch(isLoaderHandler(true));
     await getDataHandler(`https://dummyjson.com/products/${id}`).then(
       (response) => {
         if (response.status === "success") {
           setSingleProduct(response?.response);
-          setIsLoading(false);
+          // setIsLoading(false);
+          dispatch(isLoaderHandler(false));
         }
       }
     );
@@ -59,7 +71,7 @@ const ProductDetails = () => {
     quantity >= 1 && setQuantity((prev) => prev - 1);
   };
   const quantityIncHandler = () => {
-    setQuantity((prev) => prev + 1);
+    singleProduct.stock > quantity && setQuantity((prev) => prev + 1);
   };
 
   const singleProductHandler = (productId) => {
@@ -78,8 +90,14 @@ const ProductDetails = () => {
       updatedCart[existingProductIndex].quantity += quantity;
       setCartProduct(updatedCart);
     } else {
-      setCartProduct([...cartProduct, { ...singleProduct, quantity }]);
+      setCartProduct([{ ...singleProduct, quantity }, ...cartProduct]);
     }
+
+    singleProduct.stock > quantity &&
+      setSingleProduct({
+        ...singleProduct,
+        stock: singleProduct.stock - quantity,
+      });
 
     setAddCart(true);
     setOpenDrawer(true);
@@ -122,9 +140,9 @@ const ProductDetails = () => {
                 <p className="stock-title">
                   Stock:{" "}
                   {singleProduct?.stock >= 0 ? (
-                    <span>{singleProduct?.stock}</span>
+                    <span className="in-stock">In Stock</span>
                   ) : (
-                    <span>Out of stock</span>
+                    <span className="out-of-stock">Out of stock</span>
                   )}
                 </p>
                 <div className="add-to-cart-wrapper">
@@ -171,7 +189,12 @@ const ProductDetails = () => {
                       </span>
                       <img src={item.thumbnail} />
                     </div>
-                    <p className="product-category">{item.category}</p>
+                    <Link
+                      to={`/category/${item.category}`}
+                      className="product-category"
+                    >
+                      {item.category}
+                    </Link>
                     <h3
                       className="product-title"
                       onClick={() => singleProductHandler(item.id)}

@@ -9,6 +9,10 @@
     text-align: center;
 }
 
+.breadcrumb {
+    text-transform: capitalize;
+}
+
 .product-image {
     position: relative;
     height: 250px;
@@ -35,12 +39,13 @@
     background-color: #ffa965;
 }
 
-p.product-category {
+a.product-category {
     color: #777777;
     font-size: 12px;
     text-transform: uppercase;
     margin-top: 5px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    display: block;
 }
 
 h3.product-title {
@@ -110,6 +115,7 @@ input.quantity-counter {
     font-weight: 600;
     padding: 10px 30px;
     background-color: #222222;
+    font-family: "Jost";
     color: #fff;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -191,4 +197,17 @@ h2.section-title::after {
     display: inline-flex;
     vertical-align: middle;
     margin-left: 1.5rem;
+}
+
+.out-of-stock {
+    color: red;
+}
+
+.in-stock {
+    color: green;
+}
+
+.continue-shopping svg.cart-icon {
+    font-size: 140px;
+    color: #515151;
 }

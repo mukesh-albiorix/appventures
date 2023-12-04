@@ -1,16 +1,21 @@
-import { Col, Row } from "antd";
+import { Breadcrumb, Col, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import { useLoadingContext } from "../../context/LoaderContext";
 import { getDataHandler } from "../../components/apicalling/Apicalling";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import ReactStars from "react-stars";
+import { useDispatch } from "react-redux";
+import { isLoaderHandler } from "../../redux/slices/LoaderSlice";
+import { ProductListItems } from "../../components/helper/NavHelper";
 
 const ProductCategory = () => {
   const [productData, setProductData] = useState([]);
   const [categories, setCategories] = useState([]);
   const { category } = useParams();
   const { setIsLoading } = useLoadingContext();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     getProductsHandler();
@@ -18,28 +23,32 @@ const ProductCategory = () => {
   }, [category]);
 
   const getProductsHandler = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    dispatch(isLoaderHandler(true));
     await getDataHandler("https://dummyjson.com/products").then((response) => {
       if (response.status === "success") {
         setProductData(response?.response.products);
-        setIsLoading(false);
+        // setIsLoading(false);
+        dispatch(isLoaderHandler(false));
       }
     });
   };
   const getCategoriesHandler = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    dispatch(isLoaderHandler(true));
     await getDataHandler("https://dummyjson.com/products/categories").then(
       (response) => {
         if (response.status === "success") {
           setCategories(response?.response);
-          setIsLoading(false);
+          // setIsLoading(false);
+          dispatch(isLoaderHandler(false));
         }
       }
     );
   };
 
   const categorySetHandler = (category) => {
-    navigate(`/product-category/${category}`);
+    navigate(`/category/${category}`);
   };
 
   const singleProductHandler = (productId) => {
@@ -49,9 +58,25 @@ const ProductCategory = () => {
   const filteredProductData = productData?.filter(
     (item) => item.category === category
   );
+  const pageName = pathname.split("/").filter((part) => part !== "");
+
+  const items = ProductListItems(pageName[0]);
 
   return (
     <div>
+      <div className="shop-hero">
+        <div className="container">
+          <Row align={"center"} justify={"center"}>
+            <Col>
+              <h1>Shop</h1>
+              <Breadcrumb
+                items={items.map((item) => item)}
+                className="breadcrumb"
+              ></Breadcrumb>
+            </Col>
+          </Row>
+        </div>
+      </div>
       <div className="container">
         <Row gutter={[30, 30]}>
           <Col lg={6} md={8} xs={24}>
@@ -77,7 +102,12 @@ const ProductCategory = () => {
                       </span>
                       <img src={productItem.thumbnail} />
                     </div>
-                    <p className="product-category">{productItem.category}</p>
+                    <Link
+                      to={`/category/${productItem.category}`}
+                      className="product-category"
+                    >
+                      {productItem.category}
+                    </Link>
                     <h3
                       className="product-title"
                       onClick={() => singleProductHandler(productItem.id)}

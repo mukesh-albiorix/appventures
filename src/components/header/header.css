@@ -1,0 +1,25 @@
+.header-bg {
+    padding: 20px 0;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.header-bg nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.header-bg nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header-bg button {
+    color: #000;
+    background: #fff;
+    border: 0;
+    cursor: pointer;
+}

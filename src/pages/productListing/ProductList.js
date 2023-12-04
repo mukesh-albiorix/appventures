@@ -2,36 +2,64 @@ import React, { useEffect, useState } from "react";
 import { getDataHandler } from "../../components/apicalling/Apicalling";
 import { Breadcrumb, Col, Row } from "antd";
 import "./ProductList.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useLoadingContext } from "../../context/LoaderContext";
 import ReactStars from "react-stars";
 import { ProductListItems } from "../../components/helper/NavHelper";
+import { useDispatch, useSelector } from "react-redux";
+import { isLoaderHandler } from "../../redux/slices/LoaderSlice";
+import { fetchProductData } from "../../redux/slices/apiCallingSlice";
 
 const ProductList = () => {
-  const [productData, setProductData] = useState([]);
+  // const [productData, setProductData] = useState([]);
   const { setIsLoading } = useLoadingContext();
-
+  const { pathname } = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    getProductsHandler();
-  }, []);
+  const userData = useSelector((state) => state.apicall.data);
+  const { loading } = useSelector((state) => state.apicall);
 
-  const getProductsHandler = async () => {
-    setIsLoading(true);
-    await getDataHandler("https://dummyjson.com/products").then((response) => {
-      if (response.status === "success") {
-        setProductData(response?.response.products);
-        setIsLoading(false);
-      }
-    });
-  };
+  useEffect(() => {
+    // getProductsHandler();
+    // dispatch(isLoaderHandler(true));
+
+    dispatch(fetchProductData("products"));
+
+    // dispatch(isLoaderHandler(false));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (loading === "loading") {
+      return <div style={{ color: "#f00", fontSize: "500px" }}>Loading...</div>;
+    }
+    if (loading === "failed") {
+      return <div>Error loading data: {userData.error}</div>;
+    }
+  }, [loading]);
+
+  // const getProductsHandler = async () => {
+  //   // setIsLoading(true);
+  //   dispatch(isLoaderHandler(true));
+  //   await getDataHandler("https://dummyjson.com/products").then((response) => {
+  //     if (response.status === "success") {
+  //       setProductData(response?.response.products);
+  //       // setIsLoading(false);
+  //       dispatch(isLoaderHandler(false));
+  //     }
+  //   });
+  // };
 
   const singleProductHandler = (id) => {
     navigate(`/product/${id}`);
   };
 
-  const items = ProductListItems();
+  const pageName = pathname.split("/").filter((part) => part !== "");
+
+  const items =
+    pageName.length === 0
+      ? ProductListItems((pageName[0] = "Product"))
+      : ProductListItems(pageName[0]);
 
   return (
     <>
@@ -40,14 +68,17 @@ const ProductList = () => {
           <Row align={"center"} justify={"center"}>
             <Col>
               <h1>Shop</h1>
-              <Breadcrumb items={items.map((item) => item)}></Breadcrumb>
+              <Breadcrumb
+                items={items.map((item) => item)}
+                className="breadcrumb"
+              ></Breadcrumb>
             </Col>
           </Row>
         </div>
       </div>
       <div className="container">
         <Row gutter={[30, 60]}>
-          {productData.map(
+          {userData?.products.map(
             (item, index) =>
               item?.category !== "groceries" &&
               item?.category !== "home-decoration" && (
@@ -61,7 +92,12 @@ const ProductList = () => {
                     </span>
                     <img src={item.thumbnail} />
                   </div>
-                  <p className="product-category">{item.category}</p>
+                  <Link
+                    to={`/category/${item.category}`}
+                    className="product-category"
+                  >
+                    {item.category}
+                  </Link>
                   <h3
                     className="product-title"
                     onClick={() => singleProductHandler(item.id)}
