@@ -17,6 +17,7 @@
     "react-spinners": "^0.13.8",
     "react-stars": "^2.2.5",
     "reactstrap": "^9.2.1",
+    "redux-persist": "^6.0.0",
     "swiper": "^11.0.4",
     "web-vitals": "^2.1.4"
   },

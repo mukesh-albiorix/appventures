@@ -1,19 +1,15 @@
 import { Breadcrumb, Col, Row } from "antd";
 import React, { useEffect, useState } from "react";
-import { useLoadingContext } from "../../context/LoaderContext";
 import { getDataHandler } from "../../components/apicalling/Apicalling";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import ReactStars from "react-stars";
 import { useDispatch } from "react-redux";
-import { isLoaderHandler } from "../../redux/slices/LoaderSlice";
 import { ProductListItems } from "../../components/helper/NavHelper";
 
 const ProductCategory = () => {
   const [productData, setProductData] = useState([]);
   const [categories, setCategories] = useState([]);
   const { category } = useParams();
-  const { setIsLoading } = useLoadingContext();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -23,25 +19,17 @@ const ProductCategory = () => {
   }, [category]);
 
   const getProductsHandler = async () => {
-    // setIsLoading(true);
-    dispatch(isLoaderHandler(true));
     await getDataHandler("https://dummyjson.com/products").then((response) => {
       if (response.status === "success") {
         setProductData(response?.response.products);
-        // setIsLoading(false);
-        dispatch(isLoaderHandler(false));
       }
     });
   };
   const getCategoriesHandler = async () => {
-    // setIsLoading(true);
-    dispatch(isLoaderHandler(true));
     await getDataHandler("https://dummyjson.com/products/categories").then(
       (response) => {
         if (response.status === "success") {
           setCategories(response?.response);
-          // setIsLoading(false);
-          dispatch(isLoaderHandler(false));
         }
       }
     );

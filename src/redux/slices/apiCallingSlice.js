@@ -26,7 +26,7 @@ const apiCallingSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchProductData.pending, (state) => {
-        state.pending = "loading";
+        state.loading = "loading";
       })
       .addCase(fetchProductData.fulfilled, (state, action) => {
         state.loading = "succeeded";

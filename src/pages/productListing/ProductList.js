@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { getDataHandler } from "../../components/apicalling/Apicalling";
 import { Breadcrumb, Col, Row } from "antd";
-import "./ProductList.css";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useLoadingContext } from "../../context/LoaderContext";
 import ReactStars from "react-stars";
 import { ProductListItems } from "../../components/helper/NavHelper";
-import { useDispatch, useSelector } from "react-redux";
-import { isLoaderHandler } from "../../redux/slices/LoaderSlice";
 import { fetchProductData } from "../../redux/slices/apiCallingSlice";
+import Loader from "../../components/loader/Loader";
+import "./ProductList.css";
 
 const ProductList = () => {
-  // const [productData, setProductData] = useState([]);
-  const { setIsLoading } = useLoadingContext();
   const { pathname } = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,34 +17,15 @@ const ProductList = () => {
   const { loading } = useSelector((state) => state.apicall);
 
   useEffect(() => {
-    // getProductsHandler();
-    // dispatch(isLoaderHandler(true));
-
     dispatch(fetchProductData("products"));
-
-    // dispatch(isLoaderHandler(false));
   }, [dispatch]);
 
-  useEffect(() => {
-    if (loading === "loading") {
-      return <div style={{ color: "#f00", fontSize: "500px" }}>Loading...</div>;
-    }
-    if (loading === "failed") {
-      return <div>Error loading data: {userData.error}</div>;
-    }
-  }, [loading]);
-
-  // const getProductsHandler = async () => {
-  //   // setIsLoading(true);
-  //   dispatch(isLoaderHandler(true));
-  //   await getDataHandler("https://dummyjson.com/products").then((response) => {
-  //     if (response.status === "success") {
-  //       setProductData(response?.response.products);
-  //       // setIsLoading(false);
-  //       dispatch(isLoaderHandler(false));
-  //     }
-  //   });
-  // };
+  if (loading === "loading") {
+    return <Loader />;
+  }
+  if (loading === "failed") {
+    return <Loader />;
+  }
 
   const singleProductHandler = (id) => {
     navigate(`/product/${id}`);

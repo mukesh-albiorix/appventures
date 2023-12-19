@@ -4,68 +4,56 @@ import { getDataHandler } from "../../components/apicalling/Apicalling";
 import { Icon } from "@iconify/react";
 import { Breadcrumb, Col, Row } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useLoadingContext } from "../../context/LoaderContext";
 import ReactStars from "react-stars";
 import { ProductDetailsItems } from "../../components/helper/NavHelper";
 import Cart from "../../components/addtocart/Cart";
+import Loader from "../../components/loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { isLoaderHandler } from "../../redux/slices/LoaderSlice";
 
 const ProductDetails = () => {
   const [relatedProductData, setRelatedProductData] = useState([]);
-
   const [singleProduct, setSingleProduct] = useState({});
-
   const [cartProduct, setCartProduct] = useState([]);
-
-  const userData = useSelector((state) => state.apicall.data);
-
   const [quantity, setQuantity] = useState(1);
-
   const [addcart, setAddCart] = useState(false);
-
-  // const { setIsLoading } = useLoadingContext();
-  const dispatch = useDispatch();
-
   const [openDrawer, setOpenDrawer] = useState(false);
   const { id } = useParams();
-
   const navigate = useNavigate();
 
-  console.log("userData at product page", userData);
+  const userData = useSelector((state) => state.apicall.data);
+  const { loading } = useSelector((state) => state.apicall);
 
   useEffect(() => {
     getSingleProductHandler();
-    getProductsHandler();
+    // getProductsHandler();
     setAddCart(false);
     setQuantity(1);
   }, [id]);
 
-  const getProductsHandler = async () => {
-    // setIsLoading(true);
-    dispatch(isLoaderHandler(true));
-    await getDataHandler("https://dummyjson.com/products").then((response) => {
-      if (response.status === "success") {
-        setRelatedProductData(response?.response.products);
-        // setIsLoading(false);
-        dispatch(isLoaderHandler(false));
-      }
-    });
-  };
+  // const getProductsHandler = async () => {
+  //   await getDataHandler("https://dummyjson.com/products").then((response) => {
+  //     if (response.status === "success") {
+  //       setRelatedProductData(response?.response.products);
+  //     }
+  //   });
+  // };
 
   const getSingleProductHandler = async () => {
-    // setIsLoading(true);
-    dispatch(isLoaderHandler(true));
     await getDataHandler(`https://dummyjson.com/products/${id}`).then(
       (response) => {
         if (response.status === "success") {
           setSingleProduct(response?.response);
-          // setIsLoading(false);
-          dispatch(isLoaderHandler(false));
         }
       }
     );
   };
+
+  if (loading === "loading") {
+    return <Loader />;
+  }
+  if (loading === "failed") {
+    return <Loader />;
+  }
 
   const quantityDicHandler = () => {
     quantity >= 1 && setQuantity((prev) => prev - 1);
@@ -102,7 +90,7 @@ const ProductDetails = () => {
     setAddCart(true);
     setOpenDrawer(true);
   };
-
+  console.log("userData", userData.products);
   return (
     <>
       <Cart
@@ -111,6 +99,7 @@ const ProductDetails = () => {
         setCartProduct={setCartProduct}
         cartProduct={cartProduct}
       />
+
       <div className="product-details-wrapper">
         <div className="container">
           <Breadcrumb
@@ -176,43 +165,47 @@ const ProductDetails = () => {
         <div className="container">
           <h2 className="section-title">Related products</h2>
           <Row gutter={[30, 30]}>
-            {relatedProductData.map(
-              (item, index) =>
-                singleProduct?.category === item?.category && (
-                  <Col key={index} md={8} xs={12}>
-                    <div
-                      className="product-image"
-                      onClick={() => singleProductHandler(item.id)}
-                    >
-                      <span className="discount-tag">
-                        {item.discountPercentage} % OFF
-                      </span>
-                      <img src={item.thumbnail} />
-                    </div>
-                    <Link
-                      to={`/category/${item.category}`}
-                      className="product-category"
-                    >
-                      {item.category}
-                    </Link>
-                    <h3
-                      className="product-title"
-                      onClick={() => singleProductHandler(item.id)}
-                    >
-                      {item.title}
-                    </h3>
-                    <ReactStars
-                      count={5}
-                      value={item?.rating}
-                      size={24}
-                      isHalf={true}
-                      edit={false}
-                      activeColor="#ffa965"
-                    />
+            {userData?.products?.length !== 0 ? (
+              userData?.products?.map(
+                (item, index) =>
+                  singleProduct?.category === item?.category && (
+                    <Col key={index} md={8} xs={12}>
+                      <div
+                        className="product-image"
+                        onClick={() => singleProductHandler(item.id)}
+                      >
+                        <span className="discount-tag">
+                          {item.discountPercentage} % OFF
+                        </span>
+                        <img src={item.thumbnail} />
+                      </div>
+                      <Link
+                        to={`/category/${item.category}`}
+                        className="product-category"
+                      >
+                        {item.category}
+                      </Link>
+                      <h3
+                        className="product-title"
+                        onClick={() => singleProductHandler(item.id)}
+                      >
+                        {item.title}
+                      </h3>
+                      <ReactStars
+                        count={5}
+                        value={item?.rating}
+                        size={24}
+                        isHalf={true}
+                        edit={false}
+                        activeColor="#ffa965"
+                      />
 
-                    <p className="product-price">$ {item.price}</p>
-                  </Col>
-                )
+                      <p className="product-price">$ {item.price}</p>
+                    </Col>
+                  )
+              )
+            ) : (
+              <h2>No Data Available</h2>
             )}
           </Row>
         </div>

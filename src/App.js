@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import ProductList from "./pages/productListing/ProductList";
 import ProductDetails from "./pages/productListing/ProductDetails";
-import { LoaderContextProvider } from "./context/LoaderContext";
 import Loader from "./components/loader/Loader";
 import ProductCategory from "./pages/productCategory/ProductCategory";
 import Login from "./pages/loginPage/Login";
@@ -15,17 +14,14 @@ function App() {
 
   return (
     <div className="App">
-      <LoaderContextProvider>
-        <Header />
-        <Loader />
-        <Routes>
-          {/* <Route path="/" element={<Login />} /> */}
-          <Route path="/" element={<ProductList />} />
-          <Route path="/product" element={<ProductList />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/category/:category" element={<ProductCategory />} />
-        </Routes>
-      </LoaderContextProvider>
+      <Header />
+      <Routes>
+        {/* <Route path="/" element={<Login />} /> */}
+        <Route path="/" element={<ProductList />} />
+        <Route path="/product" element={<ProductList />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/category/:category" element={<ProductCategory />} />
+      </Routes>
     </div>
   );
 }
